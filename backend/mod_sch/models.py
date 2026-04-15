@@ -13,12 +13,11 @@ class Author(Base):
     articles: Mapped[list["Article"]] = relationship(back_populates="author")
 
 
-
 class Article(AuthorRelationshipMixin, Base):
     __tablename__ = "articles"
     _author_back_populates = "articles"
 
-    title: Mapped[str] = mapped_column(String(50))
+    title: Mapped[str | None] = mapped_column(String(50), server_default="untitled")
     main_text: Mapped[str] = mapped_column()
     tags: Mapped[list[str]] = mapped_column(ARRAY(String), nullable=True)
 
