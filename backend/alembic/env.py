@@ -1,5 +1,6 @@
 import asyncio
 from logging.config import fileConfig
+import backend.mod_sch
 
 from sqlalchemy import pool
 from sqlalchemy.engine import Connection
@@ -18,8 +19,8 @@ if config.config_file_name is not None:
 
 # add your model's MetaData object here
 # for 'autogenerate' support
-from backend.core.base_class import Base
-from backend.core.config import settings
+from backend.core import Base
+from backend.core import settings
 
 target_metadata = Base.metadata
 
