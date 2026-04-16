@@ -6,7 +6,7 @@ from pydantic import BaseModel
 from sqlalchemy import Select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from ..mod_sch.schemas import AuthorSchema
+from ..mod_sch.schemas import AuthorSchema, ArticleSchema
 from ..mod_sch.models import Author, Article
 
 from fastapi.exceptions import HTTPException
@@ -53,9 +53,20 @@ async def adder_session(session: AsyncSession, model_type: type[T], obj_to_add: 
 
 #! COMPLEX ONES
 
+#* AUTHORS
 async def get_authors_session(session: AsyncSession):
     return await models_to_schemas(await getter_session(session = session, model_type = Author), schema = AuthorSchema)
 
 
 async def get_author_by_id_session(session: AsyncSession, author_id: int):
     return await model_to_schema(await getter_by_id_session(session = session, model_type = Author, obj_id=author_id), schema=AuthorSchema)
+
+
+#* ARTICLES
+async def get_articles_session(session: AsyncSession):
+    return await models_to_schemas(await getter_session(session = session, model_type = Article), schema = ArticleSchema)
+
+
+async def get_article_by_id_session(session: AsyncSession, article_id: int):
+    return await model_to_schema(await getter_by_id_session(session = session, model_type = Article, obj_id = article_id), schema=ArticleSchema)
+
