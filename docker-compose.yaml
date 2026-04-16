@@ -23,6 +23,8 @@ services:
   db:
     image: postgres:18
     container_name: db_container
+    ports:
+      - "5432:5432"
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -40,6 +42,8 @@ services:
   redis:
     image : redis:8.6
     container_name: redis_container
+    ports:
+      - "6379:6379"
     command: >
       sh -c "redis-server --requirepass $$REDIS_PASSWORD"
     env_file:
