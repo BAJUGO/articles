@@ -26,9 +26,5 @@ async def get_all_authors(session: AsyncSession = ses_dep, redis: Redis = redis_
 async def get_author_by_id(author_id: int, session: AsyncSession = ses_dep, redis: Redis = redis_dep):
     return await get_author_by_id_cached(session = session, redis=redis, author_id = author_id)
 
-@router.post("/add_author")
-async def add_author(obj: AuthorCreate, session: AsyncSession = ses_dep):
-    return await adder_session(session=session, model_type=Author, obj_to_add=obj, to_return_object=True)
-
 
 

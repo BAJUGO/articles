@@ -7,8 +7,13 @@ from ..core import Base
 
 class Author(Base):
     __tablename__ = "authors"
+
     name: Mapped[str] = mapped_column(String(30))
     last_name: Mapped[str] = mapped_column(String(30))
+
+    email: Mapped[str] = mapped_column(unique=True)
+    hashed_password: Mapped[bytes] = mapped_column()
+    role: Mapped[str] = mapped_column()
 
     articles: Mapped[list["Article"]] = relationship(back_populates="author")
 

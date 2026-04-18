@@ -6,6 +6,8 @@ from pydantic import BaseModel
 from sqlalchemy import Select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from ..authorization.utilities import hash_password
+
 from ..mod_sch.schemas import AuthorSchema, ArticleSchema
 from ..mod_sch.models import Author, Article
 
@@ -70,3 +72,11 @@ async def get_articles_session(session: AsyncSession):
 async def get_article_by_id_session(session: AsyncSession, article_id: int):
     return await model_to_schema(await getter_by_id_session(session = session, model_type = Article, obj_id = article_id), schema=ArticleSchema)
 
+
+#* USERS
+async def register_user(user_in, session: AsyncSession):
+    user = Author(**user_in.model_dump(exclude={"password"}), hashed_password=hash_password(user_in.password), role="user")
+    session.add(user)
+    await session.commit()
+    await session.refresh(user)
+    return await model_to_schema(model = user, schema = AuthorSchema)

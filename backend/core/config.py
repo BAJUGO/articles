@@ -1,3 +1,6 @@
+from pathlib import Path
+
+from asyncpg.pgproto.pgproto import timedelta
 from dotenv import load_dotenv
 from pydantic import BaseModel
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -17,6 +20,13 @@ class Settings(BaseSettings):
     redis_port: int
     redis_password: str
     redis_db: str
+
+    private_key: Path
+    public_key: Path
+    algorithm: str
+    exp_time_access: int
+    exp_time_refresh: int
+
 
 
     model_config = SettingsConfigDict(
