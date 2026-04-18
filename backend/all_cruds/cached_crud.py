@@ -5,7 +5,7 @@ from typing import Callable
 from redis.asyncio import Redis
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from .def_crud import get_users_session, get_user_by_id_session
+from .def_crud import get_users_session, get_user_by_id_session, get_articles_session, get_article_by_id_session
 
 
 def cache_response_wrapper(ttl: int, namespace: str, key_builder: Callable[[dict], str] | None = None):
@@ -34,11 +34,23 @@ def cache_response_wrapper(ttl: int, namespace: str, key_builder: Callable[[dict
     return decorator
 
 
-@cache_response_wrapper(ttl=60, namespace="users", key_builder= lambda kw: str(kw["second_key_arg"]))
+#*USERS
+@cache_response_wrapper(ttl=60, namespace="users", key_builder = lambda kw: str(kw["second_key_arg"]))
 async def get_users_cached(session: AsyncSession, redis: Redis | None, second_key_arg: str = "all"):
     return await get_users_session(session = session)
 
 
-@cache_response_wrapper(ttl=60, namespace="users", key_builder= lambda kw: str(kw["user_id"]))
+@cache_response_wrapper(ttl=60, namespace="users", key_builder = lambda kw: str(kw["user_id"]))
 async def get_user_by_id_cached(session: AsyncSession, redis: Redis | None, user_id: int):
     return await get_user_by_id_session(session = session, user_id = user_id)
+
+
+#* ARTICLES
+@cache_response_wrapper(ttl=60, namespace="articles", key_builder = lambda kw: str(kw["second_key_arg"]))
+async def get_articles_cached(session: AsyncSession, redis: Redis | None, second_key_arg: str = "all"):
+    return await get_articles_session(session = session)
+
+
+@cache_response_wrapper(ttl=60, namespace="articles", key_builder = lambda kw: str(kw["article_id"]))
+async def get_article_by_id_cached(session: AsyncSession, redis: Redis | None, article_id: int):
+    return await get_article_by_id_session(session = session, article_id = user_id)

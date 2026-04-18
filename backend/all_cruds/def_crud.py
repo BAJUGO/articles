@@ -9,7 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..authorization.utilities import hash_password
 
-from ..mod_sch.schemas import UserSchema, ArticleSchema
+from ..mod_sch.schemas import UserSchema, ArticleSchema, ArticleCreate
 from ..mod_sch.models import User, Article
 
 from fastapi.exceptions import HTTPException
@@ -56,14 +56,6 @@ async def adder_session(session: AsyncSession, model_type: type[T], obj_to_add: 
 
 #! COMPLEX ONES
 
-#* USERS
-async def get_users_session(session: AsyncSession):
-    return await models_to_schemas(await getter_session(session = session, model_type = User), schema = UserSchema)
-
-
-async def get_user_by_id_session(session: AsyncSession, user_id: int):
-    return await model_to_schema(await getter_by_id_session(session = session, model_type = User, obj_id=user_id), schema=UserSchema)
-
 
 #* ARTICLES
 async def get_articles_session(session: AsyncSession):
@@ -73,6 +65,9 @@ async def get_articles_session(session: AsyncSession):
 async def get_article_by_id_session(session: AsyncSession, article_id: int):
     return await model_to_schema(await getter_by_id_session(session = session, model_type = Article, obj_id = article_id), schema=ArticleSchema)
 
+
+async def add_article_session(session: AsyncSession, article_in: ArticleCreate):
+    return await model_to_schema(await adder_session(session = session, model_type=Article, obj_to_add = article_in, to_return_object = True), schema=ArticleSchema)
 
 #* USERS
 async def register_user(user_in, session: AsyncSession):
@@ -88,4 +83,12 @@ async def register_user(user_in, session: AsyncSession):
         print(e)
     else:
         return await model_to_schema(model=user, schema=UserSchema)
+
+
+async def get_users_session(session: AsyncSession):
+    return await models_to_schemas(await getter_session(session = session, model_type = User), schema = UserSchema)
+
+
+async def get_user_by_id_session(session: AsyncSession, user_id: int):
+    return await model_to_schema(await getter_by_id_session(session = session, model_type = User, obj_id=user_id), schema=UserSchema)
 
