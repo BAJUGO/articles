@@ -5,7 +5,7 @@ from ..all_cruds.def_crud import register_user
 from .. import authorization as auth
 from fastapi import APIRouter, Response, Depends, Body
 from sqlalchemy.ext.asyncio import AsyncSession
-from ..mod_sch.schemas import AuthorCreate
+from ..mod_sch.schemas import UserCreate
 
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
@@ -23,5 +23,5 @@ async def for_users_only(user_token: auth.AccessTokenData = Depends(auth.get_cur
 
 
 @router.post("/register", tags=["Auth"])
-async def register(user: AuthorCreate, session: AsyncSession = ses_dep):
+async def register(user: UserCreate, session: AsyncSession = ses_dep):
     await register_user(user_in=user, session = session)

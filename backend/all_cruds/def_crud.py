@@ -1,6 +1,6 @@
 import json
 
-from typing import TypeVar, Any
+from typing import TypeVar
 
 from pydantic import BaseModel
 from sqlalchemy import Select
@@ -8,12 +8,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..authorization.utilities import hash_password
 
-from ..mod_sch.schemas import AuthorSchema, ArticleSchema
-from ..mod_sch.models import Author, Article
+from ..mod_sch.schemas import UserSchema, ArticleSchema
+from ..mod_sch.models import User, Article
 
 from fastapi.exceptions import HTTPException
 
-T = TypeVar("T", Author, Article)
+T = TypeVar("T", User, Article)
 P = TypeVar("P", bound=BaseModel)
 
 
@@ -55,13 +55,13 @@ async def adder_session(session: AsyncSession, model_type: type[T], obj_to_add: 
 
 #! COMPLEX ONES
 
-#* AUTHORS
-async def get_authors_session(session: AsyncSession):
-    return await models_to_schemas(await getter_session(session = session, model_type = Author), schema = AuthorSchema)
+#* USERS
+async def get_users_session(session: AsyncSession):
+    return await models_to_schemas(await getter_session(session = session, model_type = User), schema = UserSchema)
 
 
-async def get_author_by_id_session(session: AsyncSession, author_id: int):
-    return await model_to_schema(await getter_by_id_session(session = session, model_type = Author, obj_id=author_id), schema=AuthorSchema)
+async def get_user_by_id_session(session: AsyncSession, user_id: int):
+    return await model_to_schema(await getter_by_id_session(session = session, model_type = User, obj_id=user_id), schema=UserSchema)
 
 
 #* ARTICLES
@@ -75,8 +75,8 @@ async def get_article_by_id_session(session: AsyncSession, article_id: int):
 
 #* USERS
 async def register_user(user_in, session: AsyncSession):
-    user = Author(**user_in.model_dump(exclude={"password"}), hashed_password=hash_password(user_in.password), role="user")
+    user = User(**user_in.model_dump(exclude={"password"}), hashed_password=hash_password(user_in.password), role="user")
     session.add(user)
     await session.commit()
     await session.refresh(user)
-    return await model_to_schema(model = user, schema = AuthorSchema)
+    return await model_to_schema(model = user, schema = UserSchema)

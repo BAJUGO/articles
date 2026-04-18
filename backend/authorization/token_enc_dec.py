@@ -1,11 +1,12 @@
 import time
-from http.client import HTTPException
 
 import jwt
 
 from ..core import settings
 
 from datetime import timedelta, datetime, UTC
+from fastapi import Request, Response
+from fastapi.exceptions import HTTPException
 
 
 

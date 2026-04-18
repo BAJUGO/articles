@@ -1,6 +1,5 @@
 from pathlib import Path
 
-from asyncpg.pgproto.pgproto import timedelta
 from dotenv import load_dotenv
 from pydantic import BaseModel
 from pydantic_settings import BaseSettings, SettingsConfigDict

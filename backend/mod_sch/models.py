@@ -1,12 +1,12 @@
 from sqlalchemy.orm import  Mapped, mapped_column, relationship
 from sqlalchemy import String, ARRAY
 
-from .mixins import AuthorRelationshipMixin
+from .mixins import UserRelationshipMixin
 from ..core import Base
 
 
-class Author(Base):
-    __tablename__ = "authors"
+class User(Base):
+    __tablename__ = "users"
 
     name: Mapped[str] = mapped_column(String(30))
     last_name: Mapped[str] = mapped_column(String(30))
@@ -15,12 +15,12 @@ class Author(Base):
     hashed_password: Mapped[bytes] = mapped_column()
     role: Mapped[str] = mapped_column()
 
-    articles: Mapped[list["Article"]] = relationship(back_populates="author")
+    articles: Mapped[list["Article"]] = relationship(back_populates="user")
 
 
-class Article(AuthorRelationshipMixin, Base):
+class Article(UserRelationshipMixin, Base):
     __tablename__ = "articles"
-    _author_back_populates = "articles"
+    _user_back_populates = "articles"
 
     title: Mapped[str | None] = mapped_column(String(50), server_default="untitled")
     main_text: Mapped[str] = mapped_column()
