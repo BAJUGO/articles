@@ -19,9 +19,10 @@ async def create_token(response: Response, user = Depends(auth.authenticate_user
 
 @router.get("/for_users_only", tags=["Auth"])
 async def for_users_only(user_token: auth.AccessTokenData = Depends(auth.get_current_user_access_token)):
-    return f"Hello, user! Your role is {user_token.role}. Your ID is {user_token.id}"
+    return f"Hello, {user_token.name}! Your role is {user_token.role}. Your ID is {user_token.id}"
 
 
 @router.post("/register", tags=["Auth"])
 async def register(user: UserCreate, session: AsyncSession = ses_dep):
     await register_user(user_in=user, session = session)
+    return {"status": "oke"}

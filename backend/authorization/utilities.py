@@ -1,6 +1,8 @@
+from typing import Annotated
+
 import bcrypt
 
-from fastapi import Depends, Form, HTTPException
+from fastapi import Depends, Form, HTTPException, Body
 from pydantic import EmailStr
 from sqlalchemy import Select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -22,9 +24,12 @@ def verify_password(plain_pw: str, hashed_pw: bytes) -> bool:
 
 
 async def authenticate_user(
+        email: Annotated[EmailStr, Body(...)],
+        password: Annotated[str, Body(...)],
         session: AsyncSession = ses_dep,
-        email: EmailStr = Form(...),
-        password: str = Form(...),
+        # Это просто не нужно по причине того, что формат ввода будет определён в frontend части
+        # email: EmailStr = Form(...),
+        # password: str = Form(...),
 ):
     stmt = Select(User).where(User.email == str(email))
     user = await session.scalar(stmt)

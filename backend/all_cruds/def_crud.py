@@ -4,6 +4,7 @@ from typing import TypeVar
 
 from pydantic import BaseModel
 from sqlalchemy import Select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..authorization.utilities import hash_password
@@ -76,7 +77,15 @@ async def get_article_by_id_session(session: AsyncSession, article_id: int):
 #* USERS
 async def register_user(user_in, session: AsyncSession):
     user = User(**user_in.model_dump(exclude={"password"}), hashed_password=hash_password(user_in.password), role="user")
-    session.add(user)
-    await session.commit()
-    await session.refresh(user)
-    return await model_to_schema(model = user, schema = UserSchema)
+    try:
+        session.add(user)
+        await session.commit()
+        await session.refresh(user)
+    except IntegrityError as e:
+        await session.rollback()
+        if "users_email_key" in str(e.orig):
+            raise HTTPException(status_code=400, detail="Email already exists")
+        print(e)
+    else:
+        return await model_to_schema(model=user, schema=UserSchema)
+
