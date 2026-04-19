@@ -53,4 +53,4 @@ async def get_articles_cached(session: AsyncSession, redis: Redis | None, second
 
 @cache_response_wrapper(ttl=60, namespace="articles", key_builder = lambda kw: str(kw["article_id"]))
 async def get_article_by_id_cached(session: AsyncSession, redis: Redis | None, article_id: int):
-    return await get_article_by_id_session(session = session, article_id = user_id)
+    return await get_article_by_id_session(session = session, article_id = article_id)
