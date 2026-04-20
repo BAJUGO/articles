@@ -1,7 +1,7 @@
 from typing import TypeVar
 
 from pydantic import BaseModel
-from sqlalchemy import Select
+from sqlalchemy import Select, update
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
@@ -64,6 +64,13 @@ async def deleter_session(session: AsyncSession, model_type: type[T], obj_id: in
         raise HTTPException(status_code=404, detail=f"not found")
 
 
+#* UPDATER
+async def updater_session(session: AsyncSession, model_type: type[T], old_obj_id: int, new_obj: P) -> T:
+    await session.execute(update(model_type).where(model_type.id == old_obj_id).values(**new_obj.model_dump(exclude_unset=True)))
+    await session.commit()
+    return await getter_by_id_session(session = session, model_type = model_type, obj_id = old_obj_id)
+
+
 #! COMPLEX ONES
 #! LMAO XD
 #! DO YOU SEE ME?
@@ -84,6 +91,11 @@ async def add_article_session(session: AsyncSession, article_in: ArticleCreate):
 
 async def delete_article_session(session: AsyncSession, article_id: int):
     await deleter_session(session = session, model_type = Article, obj_id = article_id)
+
+
+async def update_article_session(session: AsyncSession, article_in: ArticleCreate, article_id: int):
+    new_article = await updater_session(session = session, model_type=Article, old_obj_id=article_id, new_obj = article_in)
+    return await model_to_schema(new_article, ArticleSchema)
 
 #* USERS
 async def register_user(user_in, session: AsyncSession):
