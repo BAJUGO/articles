@@ -19,12 +19,13 @@ async def check_the_data(request: Request, response: Response, token = user_dep)
         return Response(status_code=200, content="OK")
     else:
         try:
-            refresh_token = auth.get_token_from_cookies(request = request, token_type = "refresh")
+            refresh_token = auth.get_token_from_cookies(request = request, token_type = "refresh_token")
             auth.set_new_tokens(data=refresh_token, response=response)
             response.status_code = 200
             return response
         except Exception as e:
             response.status_code = 401
+            print(f"{e} auth router")
             return response
 
 

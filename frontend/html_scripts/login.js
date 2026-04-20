@@ -7,6 +7,7 @@ async function isLogined() {
         if (resp.ok) {
             window.location.href = "../html_pages/main_page.html"
         }
+        else console.log(resp)
     })
 }
 

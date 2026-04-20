@@ -33,7 +33,7 @@ def encode_refresh_token(data: dict, exp: timedelta = timedelta(seconds=settings
 
 def decode_token(token: str):
     return jwt.decode(
-        token,
+        token.encode(),
         key=settings.public_key.read_text(),
         algorithms=[settings.algorithm]
     )
@@ -41,13 +41,14 @@ def decode_token(token: str):
 
 def get_token_from_cookies(request: Request, token_type: str):
     try:
-        decoded_token = decode_token(request.cookies.get(token_type))
+        token = request.cookies.get(token_type)
+        decoded_token = decode_token(token)
         if decoded_token["exp"] < time.time():
             raise HTTPException(status_code=401, detail="Not authenticated")
         return decoded_token
     except Exception as e:
         # There will be logging (sometime. Eventually. Most likely)
-        print(e)
+        print(f"{e} token_enc_dec")
 
 
 def set_new_tokens(data: dict, response: Response):
