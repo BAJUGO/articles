@@ -9,7 +9,9 @@ from ..mod_sch.schemas import UserSchema, UserCreate, ArticleCreate
 
 from ..all_cruds.def_crud import add_article_session
 from ..all_cruds.cached_crud import get_users_cached, get_user_by_id_cached, get_article_by_id_cached, get_articles_cached
-from ..all_cruds.rel_crud import get_articles_of_user_session, get_user_of_article_session
+from ..all_cruds.rel_crud import (get_articles_of_user_session,
+                                  get_user_of_article_session,
+                                  get_articles_of_all_users_session)
 
 from ..core import ses_dep
 
@@ -44,6 +46,10 @@ async def get_all_articles(session: AsyncSession = ses_dep, redis: Redis = redis
     return await get_articles_cached(session=session, redis=redis, second_key_arg="all")
 
 
+@router.get("/all_articles_with_users")
+async def get_all_articles_with_users(session: AsyncSession = ses_dep, redis: Redis = redis_dep):
+    return await get_articles_of_all_users_session(session=session)
+
 @router.get("/article_by_id/{article_id}")
 async def get_article_by_id(article_id: int, session: AsyncSession = ses_dep, redis: Redis = redis_dep):
     return await get_article_by_id_cached(session = session, redis=redis, article_id = article_id)
@@ -56,4 +62,6 @@ async def add_article(article: ArticleCreate, session: AsyncSession = ses_dep, r
 
 @router.get("/articles_of_user/{user_id}")
 async def get_articles_of_user(user_id: int, session: AsyncSession = ses_dep):
-    return await get_articles_of_user_session(session = session, user_id = user_id)
+    articles =  await get_articles_of_user_session(session = session, user_id = user_id)
+    return {f"{user_id} user articles are:": articles}
+

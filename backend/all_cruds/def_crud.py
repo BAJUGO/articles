@@ -60,8 +60,8 @@ async def deleter_session(session: AsyncSession, model_type: type[T], obj_id: in
     if obj:
         await session.delete(obj)
         await session.commit()
-        return f"{model_type.__name__} deleted successfully"
-    raise HTTPException(status_code=404, detail=f"not found")
+    else:
+        raise HTTPException(status_code=404, detail=f"not found")
 
 
 #! COMPLEX ONES
@@ -83,7 +83,7 @@ async def add_article_session(session: AsyncSession, article_in: ArticleCreate):
 
 
 async def delete_article_session(session: AsyncSession, article_id: int):
-    return await deleter_session(session = session, model_type = Article, obj_id = article_id)
+    await deleter_session(session = session, model_type = Article, obj_id = article_id)
 
 #* USERS
 async def register_user(user_in, session: AsyncSession):

@@ -7,3 +7,6 @@ class Base(Baza):
 
     id: Mapped[int] = mapped_column(primary_key=True)
 
+    def as_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+
