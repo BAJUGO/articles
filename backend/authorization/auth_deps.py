@@ -10,7 +10,7 @@ def get_current_user_access_token(request: Request) -> AccessTokenData:
         return AccessTokenData(**token)
     except Exception as e:
         # Looooooooging
-        raise HTTPException(status_code=401, detail=f"{e}")
+        raise HTTPException(status_code=401, detail=f"Unauthorized")
 
 
 def get_user_with_role(required_role: list[str]):

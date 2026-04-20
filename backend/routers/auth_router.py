@@ -10,6 +10,9 @@ from ..mod_sch.schemas import UserCreate
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
 
+user_dep = Depends(auth.get_current_user_access_token)
+
+
 @router.post("/create_token", tags=["Auth"])
 async def create_token(response: Response, user = Depends(auth.authenticate_user)):
     data = {"sub": str(user.id), "name": user.name, "role": user.role, "id": user.id}
@@ -17,8 +20,8 @@ async def create_token(response: Response, user = Depends(auth.authenticate_user
     return {"status": "oke"}
 
 
-@router.get("/for_users_only", tags=["Auth"])
-async def for_users_only(user_token: auth.AccessTokenData = Depends(auth.get_current_user_access_token)):
+@router.get("/for_users_only", tags=["Auth"], dependencies=[user_dep])
+async def for_users_only(user_token: auth.AccessTokenData = user_dep):
     return f"Hello, {user_token.name}! Your role is {user_token.role}. Your ID is {user_token.id}"
 
 
