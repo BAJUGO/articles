@@ -1,5 +1,6 @@
 from typing import TypeVar
 
+from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
@@ -13,6 +14,9 @@ from ..mod_sch import Article, User, ArticleSchema, UserSchema
 async def get_articles_of_all_users_session(session: AsyncSession):
     stmt = select(User).options(selectinload(User.articles))
     users = list(await session.scalars(stmt))
+    if not users:
+        raise HTTPException(status_code=404, detail="Users not found")
+
     result = {}
     for user in users:
         items = getattr(user, User.articles.key)
@@ -26,13 +30,14 @@ async def get_articles_of_user_session(session: AsyncSession, user_id: int):
     if user:
         items = getattr(user, User.articles.key)
         return {f"User {user_id} articles are:": await models_to_schemas(items, ArticleSchema)}
-    return None
+    raise HTTPException(status_code=404, detail="User not found")
 
 
 async def get_user_of_article_session(session: AsyncSession, article_id: int):
     stmt = select(Article).where(Article.id == article_id).options(selectinload(Article.user))
-    user = await session.scalar(stmt)
-    if user:
-        return await model_to_schema(user, UserSchema)
-    return None
+    article = await session.scalar(stmt)
+    print(article)
+    if article:
+        return await model_to_schema(article.user, UserSchema)
+    raise HTTPException(status_code=404, detail="Article not found")
 
