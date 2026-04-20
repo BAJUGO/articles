@@ -30,11 +30,9 @@ async def get_articles_of_user_session(session: AsyncSession, user_id: int):
 
 
 async def get_user_of_article_session(session: AsyncSession, article_id: int):
-    stmt = select(Article).where(Article.id == article_id)
-    article = await session.scalar(stmt)
-    stmt = select(User).where(User.id == article.user_id)
+    stmt = select(Article).where(Article.id == article_id).options(selectinload(Article.user))
     user = await session.scalar(stmt)
-    if user and article:
+    if user:
         return await model_to_schema(user, UserSchema)
     return None
 
