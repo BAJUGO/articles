@@ -49,6 +49,6 @@ async def get_articles_of_user(user_id: int, session: AsyncSession = ses_dep):
     return await get_articles_of_user_session(session = session, user_id = user_id)
 
 
-@router.get("/user_id_by_article/{article_id}")
+@router.get("/user_by_article_id/{article_id}")
 async def get_user_of_article(article_id: int,session: AsyncSession = ses_dep):
     return await get_user_of_article_session(session = session, article_id = article_id)
