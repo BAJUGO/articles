@@ -1,7 +1,10 @@
-from typing import TypeVar
+import json
+
+from typing import TypeVar, Annotated
 
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
+
 from sqlalchemy import Select, update
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -14,8 +17,13 @@ from ..mod_sch.models import User, Article
 
 from fastapi.exceptions import HTTPException
 
+from ..utils import json_body, json_to_dict_or_pyd_session
+
+from fastapi import Body
+
 T = TypeVar("T", User, Article)
 P = TypeVar("P", bound=BaseModel)
+
 
 
 #? SOME UTILITIES
@@ -29,6 +37,7 @@ async def models_to_schemas(models: list[T], schema: type[P]) -> list[P]:
 async def get_objs(session: AsyncSession, model_type: type[T]):
     stmt = Select(model_type)
     return list(await session.scalars(stmt))
+
 
 # Base operations used further in more complex functions
 

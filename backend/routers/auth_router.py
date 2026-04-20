@@ -3,14 +3,44 @@ from typing import Annotated
 from ..core import ses_dep
 from ..all_cruds.def_crud import register_user
 from .. import authorization as auth
-from fastapi import APIRouter, Response, Depends, Body
+from fastapi import APIRouter, Response, Depends, Body, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 from ..mod_sch.schemas import UserCreate
 
 
-router = APIRouter(prefix="/auth", tags=["Auth"])
+router = APIRouter(tags=["Auth"])
 
 user_dep = Depends(auth.get_current_user_access_token)
+
+
+@router.get("/initPage")
+async def check_the_data(request: Request, response: Response, token = user_dep):
+    if token:
+        return Response(status_code=200, content="OK")
+    else:
+        try:
+            refresh_token = auth.get_token_from_cookies(request = request, token_type = "refresh")
+            auth.set_new_tokens(data=refresh_token, response=response)
+            response.status_code = 200
+            return response
+        except Exception as e:
+            response.status_code = 401
+            return response
+
+
+@router.get("/delete_cookies")
+async def delete_cookies(request: Request, response: Response):
+    if request.cookies.get("access_token") or request.cookies.get("refresh_token"):
+        try:
+            response.delete_cookie(key="access_token", path="/")
+            response.delete_cookie(key="refresh_token", path="/")
+        except Exception as e:
+            pass
+        response.status_code, response.content = 200, "OK"
+        return response
+    response.status_code = 401
+    return response
+
 
 
 @router.post("/create_token", tags=["Auth"])
