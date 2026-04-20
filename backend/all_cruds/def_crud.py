@@ -1,5 +1,6 @@
 from typing import TypeVar
 
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from sqlalchemy import Select, update
 from sqlalchemy.exc import IntegrityError
@@ -8,7 +9,7 @@ from sqlalchemy.orm import selectinload
 
 from ..authorization.utilities import hash_password
 
-from ..mod_sch.schemas import UserSchema, ArticleSchema, ArticleCreate
+from ..mod_sch.schemas import UserSchema, ArticleSchema, ArticleCreate, UserPatch
 from ..mod_sch.models import User, Article
 
 from fastapi.exceptions import HTTPException
@@ -65,10 +66,10 @@ async def deleter_session(session: AsyncSession, model_type: type[T], obj_id: in
 
 
 #* UPDATER
-async def updater_session(session: AsyncSession, model_type: type[T], old_obj_id: int, new_obj: P) -> T:
-    await session.execute(update(model_type).where(model_type.id == old_obj_id).values(**new_obj.model_dump(exclude_unset=True)))
+async def updater_session(session: AsyncSession, model_type: type[T], obj_id: int, changes: P) -> T:
+    await session.execute(update(model_type).where(model_type.id == obj_id).values(**changes.model_dump(exclude_unset=True)))
     await session.commit()
-    return await getter_by_id_session(session = session, model_type = model_type, obj_id = old_obj_id)
+    return await getter_by_id_session(session = session, model_type = model_type, obj_id = obj_id)
 
 
 #! COMPLEX ONES
@@ -93,9 +94,10 @@ async def delete_article_session(session: AsyncSession, article_id: int):
     await deleter_session(session = session, model_type = Article, obj_id = article_id)
 
 
-async def update_article_session(session: AsyncSession, article_in: ArticleCreate, article_id: int):
-    new_article = await updater_session(session = session, model_type=Article, old_obj_id=article_id, new_obj = article_in)
-    return await model_to_schema(new_article, ArticleSchema)
+async def update_article_session(session: AsyncSession, changes: BaseModel, article_id: int):
+    updated = await updater_session(session = session, model_type=Article, obj_id=article_id, changes=changes)
+    return await model_to_schema(updated, ArticleSchema)
+
 
 #* USERS
 async def register_user(user_in, session: AsyncSession):
@@ -128,6 +130,20 @@ async def delete_user_session(session: AsyncSession, user_id: int):
         for article in user.articles:
             await session.delete(article)
             await session.commit()
-    return f"{user.name} deleted successfully (including theirs articles)"
 
 
+async def change_user_info_session(session: AsyncSession, changes: UserPatch, user_id: int):
+    updated = await updater_session(session = session, model_type = User, obj_id= user_id, changes = changes)
+    return await model_to_schema(updated, UserSchema)
+
+
+async def change_user_role_session(session: AsyncSession, user_id: int, new_role: str):
+    user = await getter_by_id_session(session = session, model_type=User, obj_id = user_id)
+    print(user)
+    if user.role == "admin":
+        return JSONResponse(status_code=400, content="You can't change role of admin")
+    user.role = new_role
+
+    await session.commit()
+    await session.refresh(user)
+    return JSONResponse(status_code=200, content={user.name: user.role})
