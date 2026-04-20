@@ -4,6 +4,7 @@ from pydantic import BaseModel
 from sqlalchemy import Select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 
 from ..authorization.utilities import hash_password
 
@@ -108,6 +109,13 @@ async def get_user_by_id_session(session: AsyncSession, user_id: int):
     return await model_to_schema(await getter_by_id_session(session = session, model_type = User, obj_id=user_id), schema=UserSchema)
 
 
-
+async def delete_user_session(session: AsyncSession, user_id: int):
+    stmt = Select(User).where(User.id == user_id).options(selectinload(User.articles))
+    user = await session.scalar(stmt)
+    if user:
+        for article in user.articles:
+            await session.delete(article)
+            await session.commit()
+    return f"{user.name} deleted successfully (including theirs articles)"
 
 

@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..core import ses_dep
 from ..mod_sch import Article
-from ..all_cruds.def_crud import delete_article_session
+from ..all_cruds.def_crud import delete_article_session, delete_user_session
 
 router = APIRouter()
 
@@ -11,7 +11,10 @@ router = APIRouter()
 #* USERS RELATED
 
 
-
+#?delete
+@router.delete("/delete_user/{user_id}")
+async def delete_user(user_id: int, session: AsyncSession = ses_dep):
+    return await delete_user_session(session = session, user_id = user_id)
 
 
 
