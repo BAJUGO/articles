@@ -42,7 +42,6 @@ def decode_token(token: str):
 def get_token_from_cookies(request: Request, token_type: str):
     try:
         token = request.cookies.get(token_type)
-        print(request.cookies.get("refresh_token"), end='\n\n')
         decoded_token = decode_token(token)
         if decoded_token["exp"] < time.time():
             raise HTTPException(status_code=401, detail="Not authenticated")

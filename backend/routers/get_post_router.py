@@ -43,7 +43,7 @@ async def get_user_of_article(article_id: int, session: AsyncSession = ses_dep):
 
 
 #?get
-@router.get("/all_articles", dependencies = [user_dep])
+@router.get("/articles/get_articles", dependencies = [user_dep])
 async def get_all_articles(session: AsyncSession = ses_dep, redis: Redis = redis_dep):
     return await get_articles_cached(session=session, redis=redis, second_key_arg="all")
 
@@ -52,7 +52,7 @@ async def get_all_articles(session: AsyncSession = ses_dep, redis: Redis = redis
 async def get_all_articles_with_users(session: AsyncSession = ses_dep, redis: Redis = redis_dep):
     return await get_articles_of_all_users_session(session=session)
 
-@router.get("/article_by_id/{article_id}", dependencies = [user_dep])
+@router.get("/articles/{article_id}", dependencies = [user_dep])
 async def get_article_by_id(article_id: int, session: AsyncSession = ses_dep, redis: Redis = redis_dep):
     return await get_article_by_id_cached(session = session, redis=redis, article_id = article_id)
 
