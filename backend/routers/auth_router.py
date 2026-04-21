@@ -3,30 +3,26 @@ from typing import Annotated
 from ..core import ses_dep
 from ..all_cruds.def_crud import register_user
 from .. import authorization as auth
-from fastapi import APIRouter, Response, Depends, Body, Request
+from fastapi import APIRouter, Response, Depends, Body, Request, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from ..mod_sch.schemas import UserCreate
+
+from ..utils import json_body, json_to_dict_or_pyd_session
 
 
 router = APIRouter(tags=["Auth"])
 
-user_dep = Depends(auth.get_current_user_access_token)
+user_dep = Depends(auth.get_current_user_token)
 
 
 @router.get("/initPage")
-async def check_the_data(request: Request, response: Response, token = user_dep):
+async def check_the_data(request: Request, response: Response):
+    token = auth.get_current_user_token(request=request)
     if token:
-        return Response(status_code=200, content="OK")
-    else:
-        try:
-            refresh_token = auth.get_token_from_cookies(request = request, token_type = "refresh_token")
-            auth.set_new_tokens(data=refresh_token, response=response)
-            response.status_code = 200
-            return response
-        except Exception as e:
-            response.status_code = 401
-            print(f"{e} auth router")
-            return response
+        auth.set_new_tokens(data=token.model_dump(), response=response)
+        response.status_code = 200
+        return response
+    raise HTTPException(status_code=401, detail="Unauthorized error  {happened in initPage}")
 
 
 @router.get("/delete_cookies")
@@ -57,6 +53,7 @@ async def for_users_only(user_token: auth.AccessTokenData = user_dep):
 
 
 @router.post("/register", tags=["Auth"])
-async def register(user: UserCreate, session: AsyncSession = ses_dep):
+async def register(user_json: json_body, session: AsyncSession = ses_dep):
+    user = await json_to_dict_or_pyd_session(body=user_json, key_to_extract="user_body", to_schema=UserCreate)
     await register_user(user_in=user, session = session)
     return {"status": "oke"}
