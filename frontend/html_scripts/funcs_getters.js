@@ -21,6 +21,7 @@ export async function get_object_by_id(object_type, event){
     id.value = ''
 }
 
+
 export async function get_all_objects(object_type, event) {
     event.preventDefault()
     document.getElementById('ul_2').innerHTML = ''

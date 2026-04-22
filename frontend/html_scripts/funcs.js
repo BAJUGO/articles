@@ -58,7 +58,7 @@ export async function unloginUser(event) {
 }
 
 export async function includeUnlogin() {
-    let init_page = initPage()
+    void initPage()
     document.getElementById("unlogin").addEventListener('click', (event) => {
         unloginUser(event)
     })
