@@ -1,5 +1,5 @@
 import {initPage} from "./funcs.js";
-import {get_all_objects, get_object_by_id} from "./funcs_getters.js";
+import {get_all_objects, get_object_by_id} from "./funcs_getter.js";
 
 void initPage()
 

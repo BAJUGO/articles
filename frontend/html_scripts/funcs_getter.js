@@ -1,5 +1,6 @@
 import {create_content_on_page, initPage, json_fetch} from "./funcs.js";
 
+
 export const mapping = {
     article: "articles",
     user: "users",

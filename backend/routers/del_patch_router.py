@@ -20,7 +20,7 @@ router = APIRouter()
 
 
 #?delete
-@router.delete("/delete_user/{user_id}", dependencies = [user_dep])
+@router.delete("/users/{user_id}", dependencies = [user_dep])
 async def delete_user(user_id: int, session: AsyncSession = ses_dep):
     await delete_user_session(session = session, user_id = user_id)
     return f"{user_id} user is deleted (including theirs articles)"
@@ -35,10 +35,12 @@ async def change_user(user_id: int, changes: UserPatch, session: AsyncSession = 
 async def change_user_role(user_id: int, new_role: str, session: AsyncSession = ses_dep):
     return await change_user_role_session(session = session, user_id = user_id, new_role = new_role)
 
+
+
 #* ARTICLES RELATED
 
 #?delete
-@router.delete("/delete_aritcle/{article_id}", dependencies = [user_dep])
+@router.delete("/articles/{article_id}", dependencies = [user_dep])
 async def delete_article(article_id: int, session: AsyncSession = ses_dep):
     await delete_article_session(session = session, article_id = article_id)
     return f"{article_id} article is deleted"

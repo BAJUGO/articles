@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<a href="main_page.html">Back</a>
+
+<button id="unlogin">Unlogin</button>
+
+<div>
+    <form id="deleteUserForm">
+        <input id="userIdInput" type="number" placeholder="User ID">
+        <button type="submit">Delete</button>
+    </form>
+
+    <form id="deleteArticleForm">
+        <input id="articleIdInput" type="number" placeholder="Article ID">
+        <button type="submit">Delete</button>
+    </form>
+
+
+</div>
+
+<script type="module" src="../html_scripts/funcs_deleter.js">
+</script>
+
+<script type="module">
+import {includeUnlogin} from "../html_scripts/funcs.js";
+includeUnlogin()
+</script>
+<script type="module" src="../html_scripts/funcs_deleter.js">
+</script>
+
+</body>
+</html>

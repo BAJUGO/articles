@@ -2,6 +2,7 @@ from fastapi import APIRouter
 from redis.asyncio import Redis
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from ..utils import json_body, json_to_dict_or_pyd_session
 from ..back_backend.pre_post import redis_dep
 
 from ..mod_sch.models import User
@@ -56,14 +57,20 @@ async def get_all_articles_with_users(session: AsyncSession = ses_dep, redis: Re
 async def get_article_by_id(article_id: int, session: AsyncSession = ses_dep, redis: Redis = redis_dep):
     return await get_article_by_id_cached(session = session, redis=redis, article_id = article_id)
 
-#?post
-@router.post("/article", dependencies = [user_dep])
-async def add_article(article: ArticleCreate, session: AsyncSession = ses_dep, redis: Redis = redis_dep):
-    return await add_article_session(session = session, article_in = article)
-
 
 @router.get("/articles_of_user/{user_id}", dependencies = [user_dep])
 async def get_articles_of_user(user_id: int, session: AsyncSession = ses_dep):
     articles =  await get_articles_of_user_session(session = session, user_id = user_id)
     return {f"{user_id} user articles are:": articles}
+
+
+#?post
+@router.post("/articles/add_article")
+async def add_article(article_json: json_body, session: AsyncSession = ses_dep, user = user_dep):
+    article = await json_to_dict_or_pyd_session(body = article_json, key_to_extract = "article_body")
+    article["user_id"] = user.id
+    return await add_article_session(session = session, article_in = ArticleCreate(**article))
+
+
+
 

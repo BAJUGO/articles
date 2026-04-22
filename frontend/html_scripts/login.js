@@ -1,5 +1,5 @@
 
-let BaseUrl = "http://localhost:8000"
+export const BaseUrl = "http://localhost:8000"
 
 
 async function isLogined() {

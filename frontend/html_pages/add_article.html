@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Article</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+        }
+        .container {
+            max-width: 600px;
+        }
+        .row {
+            margin-bottom: 15px;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            font-size: 14px;
+        }
+        button {
+            padding: 10px 15px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<a href="articles_center.html">Back</a>
+
+<button id="unlogin">Unlogin</button>
+
+<div class="container">
+    <div class="row">
+        <label>Title</label>
+        <input id="articleTitle">
+    </div>
+
+    <div class="row">
+        <label>Main Text</label>
+        <textarea id="articleMainText" rows="10"></textarea>
+    </div>
+
+    <div class="row">
+        <button id="addArticleButton">Add article</button>
+    </div>
+</div>
+
+<script type="module" src="../html_scripts/add_article.js"></script>
+<script type="module">
+    import { includeUnlogin } from "../html_scripts/funcs.js";
+    includeUnlogin();
+</script>
+
+</body>
+</html>

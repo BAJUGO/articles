@@ -1,3 +1,4 @@
+
 export async function json_fetch(url, options = {}) {
     let resp = await fetch(url, {
         ...options,
@@ -50,7 +51,7 @@ export async function initPage() {
 
 export async function unloginUser(event) {
     event.preventDefault()
-    fetch("http://localhost:8000/delete_cookies", {credentials: "include"}).then(response => {
+    fetch(`http://localhost:8000/delete_cookies`, {credentials: "include"}).then(response => {
         if (response.ok) {
             window.location.href = "../index.html"
         }
