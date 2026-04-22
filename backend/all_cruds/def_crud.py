@@ -136,9 +136,11 @@ async def delete_user_session(session: AsyncSession, user_id: int):
     stmt = Select(User).where(User.id == user_id).options(selectinload(User.articles))
     user = await session.scalar(stmt)
     if user:
+        await session.delete(user)
         for article in user.articles:
             await session.delete(article)
             await session.commit()
+
 
 
 async def change_user_info_session(session: AsyncSession, changes: UserPatch, user_id: int):

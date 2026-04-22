@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Update Article</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+        }
+        .container {
+            max-width: 600px;
+        }
+        .row {
+            margin-bottom: 15px;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            font-size: 14px;
+        }
+        button {
+            padding: 10px 15px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<a href="articles_center.html">Back</a>
+
+<button id="unlogin">Unlogin</button>
+
+<div class="container">
+    <div class="row">
+        <label>Title</label>
+        <input id="article_title">
+    </div>
+
+    <div class="row">
+        <label>Main Text</label>
+        <textarea id="article_main_text" rows="10"></textarea>
+    </div>
+
+    <div class="row">
+        <label>Article ID</label>
+        <input type="number" id="article_id">
+    </div>
+
+    <div class="row">
+        <button title="Пустые параметры будут проигнорированны" id="updateArticleButton">update article</button>
+    </div>
+</div>
+
+
+<script type="module">
+    import { includeUnlogin } from "../html_scripts/funcs.js";
+    import {update_article} from "../html_scripts/funcs_updater.js";
+    document.getElementById("updateArticleButton").addEventListener("click", update_article)
+    includeUnlogin();
+</script>
+
+</body>
+</html>
