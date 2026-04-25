@@ -10,7 +10,6 @@ RUN poetry config virtualenvs.create false && poetry install --only main --no-in
 FROM python:3.14-slim
 WORKDIR /app
 
-# Копируем установленные пакеты
 COPY --from=builder /usr/local/lib/python3.14/site-packages /usr/local/lib/python3.14/site-packages
 COPY --from=builder /usr/local/bin /usr/local/bin
 
