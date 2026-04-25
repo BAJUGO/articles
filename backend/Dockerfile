@@ -1,13 +1,20 @@
-FROM python:3.13-slim
-
+FROM python:3.14-slim as builder
 WORKDIR /app
 
-CMD ["sh", "-c", "cd backend && pip freeze > requirements.txt"]
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install "poetry>=2.0.1"
 
-COPY . ./backend/
+COPY pyproject.toml poetry.lock ./
+
+RUN poetry config virtualenvs.create false && poetry install --only main --no-interaction --no-ansi --no-root
+
+FROM python:3.14-slim
+WORKDIR /app
+
+# Копируем установленные пакеты
+COPY --from=builder /usr/local/lib/python3.14/site-packages /usr/local/lib/python3.14/site-packages
+COPY --from=builder /usr/local/bin /usr/local/bin
+
+COPY backend/ ./backend/
 
 ENV PYTHONPATH=/app
-
 CMD ["sh", "-c", "alembic -c backend/alembic.ini upgrade head && uvicorn backend.main:app --host 0.0.0.0 --port 8000"]

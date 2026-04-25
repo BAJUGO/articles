@@ -21,13 +21,13 @@ router = APIRouter()
 
 
 #?delete
-@router.delete("/users/{user_id}", dependencies = [user_dep])
-async def delete_user(user_id: int, session: AsyncSession = ses_dep):
-    await delete_user_session(session = session, user_id = user_id)
+@router.delete("/users/{user_id}")
+async def delete_user(user_id: int, session: AsyncSession = ses_dep, user = user_dep):
+    await delete_user_session(session = session, user_id = user_id, self_user_id = user.id)
     return f"{user_id} user is deleted (including theirs articles)"
 
 #?update
-@router.patch("/change_user/{user_id}", dependencies = [user_dep])
+@router.patch("/users/{user_id}", dependencies = [user_dep])
 async def change_user(user_id: int, changes: UserPatch, session: AsyncSession = ses_dep):
     return await change_user_info_session(session = session, user_id = user_id, changes = changes)
 

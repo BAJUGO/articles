@@ -132,7 +132,9 @@ async def get_user_by_id_session(session: AsyncSession, user_id: int):
     return await model_to_schema(await getter_by_id_session(session = session, model_type = User, obj_id=user_id), schema=UserSchema)
 
 
-async def delete_user_session(session: AsyncSession, user_id: int):
+async def delete_user_session(session: AsyncSession, user_id: int, self_user_id: int):
+    if user_id == self_user_id:
+        raise HTTPException(status_code=400, detail="You can't delete yourself")
     stmt = Select(User).where(User.id == user_id).options(selectinload(User.articles))
     user = await session.scalar(stmt)
     if user:

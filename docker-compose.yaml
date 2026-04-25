@@ -1,12 +1,13 @@
 services:
   backend:
-    build: ./backend
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
     image: my_backend_build
 
     depends_on:
       redis:
         condition: service_healthy
-# ЕБАНУТЫЙ УЁБОК БЛЯДЬ ЕЩЁ БЫ ЧАС СИДЕЛ ЗА ЭТОЙ ХУЙНЁЙ СЦУКА НАХУЙ БЛЯДЬ ПИШИ DEPENDS ГДЕ НУЖНО ДЕГЕНЕРАТ
 
     ports:
       - "8000:8000"
