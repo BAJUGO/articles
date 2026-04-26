@@ -9,8 +9,36 @@ export async function json_fetch(url, options = {}) {
 }
 
 
+export function create_articles_of_user_on_page(value, id_of_ul) {
+    let main_element = document.createElement("h1")
+    let ul_to_change = document.getElementById(id_of_ul)
+    let sub_ul = document.createElement("ul")
+    let li_to_add = document.createElement("li")
+
+    let key = Object.keys(value)[0]
+
+    main_element.innerText = key
+
+    for (let articleObj of value[key]) {
+        for (let [fieldName, fieldValue] of Object.entries(articleObj)) {
+            if (fieldName === "user_id") continue
+
+            let field = document.createElement("li")
+
+            if (fieldName === "title") {
+                field.innerHTML = `<b>${fieldName} - ${fieldValue}</b>`
+            }
+            else field.innerHTML = `${fieldName} - ${fieldValue}`
+            sub_ul.appendChild(field)
+        }
+    }
+    li_to_add.appendChild(sub_ul)
+    ul_to_change.appendChild(li_to_add)
+}
+
+
 export function create_content_on_page(value, id_of_ul) {
-    let ul_to_changed = document.getElementById(id_of_ul)
+    let ul_to_change = document.getElementById(id_of_ul)
     let li_to_add = document.createElement("li")
     let main_element = document.createElement("h1")
     let sub_ul = document.createElement("ul")
@@ -19,7 +47,7 @@ export function create_content_on_page(value, id_of_ul) {
         sub_ul.innerHTML = value["detail"]
         li_to_add.appendChild(main_element)
         li_to_add.appendChild(sub_ul)
-        ul_to_changed.appendChild(li_to_add)
+        ul_to_change.appendChild(li_to_add)
         return
     }
 
@@ -33,8 +61,8 @@ export function create_content_on_page(value, id_of_ul) {
         sub_ul.appendChild(object)
     }
     li_to_add.appendChild(sub_ul)
-    ul_to_changed.appendChild(li_to_add)
-    ul_to_changed.appendChild(document.createElement("hr"))
+    ul_to_change.appendChild(li_to_add)
+    ul_to_change.appendChild(document.createElement("hr"))
 
 
 }

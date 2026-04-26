@@ -58,7 +58,7 @@ async def get_article_by_id(article_id: int, session: AsyncSession = ses_dep, re
     return await get_article_by_id_cached(session = session, redis=redis, article_id = article_id)
 
 
-@router.get("/articles_of_user/{user_id}", dependencies = [user_dep])
+@router.get("/articles/user/{user_id}", dependencies = [user_dep])
 async def get_articles_of_user(user_id: int, session: AsyncSession = ses_dep):
     articles =  await get_articles_of_user_session(session = session, user_id = user_id)
     return {f"{user_id} user articles are:": articles}

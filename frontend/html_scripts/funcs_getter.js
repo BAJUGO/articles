@@ -1,4 +1,4 @@
-import {create_content_on_page, initPage, json_fetch} from "./funcs.js";
+import {create_articles_of_user_on_page, create_content_on_page, initPage, json_fetch} from "./funcs.js";
 
 
 export const mapping = {
@@ -32,8 +32,24 @@ export async function get_all_objects(object_type, event) {
         method: "GET",
         credentials: "include"
     }).then(response => {
+        console.log(response)
         for (let object_number in response) {
             create_content_on_page(response[object_number], "ul_2")
         }
     })
+}
+
+
+export async function get_all_articles_of_user(event) {
+    event.preventDefault()
+    let id = document.getElementById("user_id");
+    document.getElementById('ul_3').innerHTML = '';
+    void initPage();
+    json_fetch(`http://localhost:8000/articles/user/${id.value}`, {
+        method: "GET",
+        credentials: "include"
+    }).then(response => {
+        create_articles_of_user_on_page(response, "ul_3")
+    });
+    id.value = '';
 }
