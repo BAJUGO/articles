@@ -1,5 +1,7 @@
 from fastapi import FastAPI
+from fastapi.responses import Response
 
+from .back_backend.middleware import my_middleware
 from .back_backend.pre_post import lifespan
 
 from .routers.get_post_router import router as get_post_router
@@ -8,12 +10,16 @@ from .routers.del_patch_router import router as del_patch_router
 
 from fastapi.middleware.cors import CORSMiddleware
 
+from prometheus_client import Counter, generate_latest, CONTENT_TYPE_LATEST
+
 app = FastAPI(lifespan=lifespan)
 
 app.include_router(auth_router)
 app.include_router(get_post_router)
 app.include_router(del_patch_router)
 
+
+app.middleware("http")(my_middleware)
 
 
 
@@ -31,3 +37,8 @@ app.add_middleware(
         allow_methods=["*"],
         allow_headers=["*"],
     )
+
+
+@app.get("/metrics")
+async def metrics():
+    return Response(generate_latest(), media_type=CONTENT_TYPE_LATEST)
