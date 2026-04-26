@@ -98,10 +98,27 @@ services:
       articles_network:
 
 
+  grafana:
+    image: grafana/grafana
+    container_name: grafana_container
+    ports:
+      - "3000:3000"
+#   expose:
+#     - "3000"
+    depends_on:
+      - prometheus
+    volumes:
+      - grafana_storage:/var/lib/grafana
+    networks:
+      articles_network:
+
+
+
 
 volumes:
   db-data:
   prometheus_data:
+  grafana_storage:
 
 networks:
   articles_network:
