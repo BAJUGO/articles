@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.responses import Response
 
+from .back_backend.middleware import my_middleware
 from .back_backend.pre_post import lifespan
 
 from .routers.get_post_router import router as get_post_router
@@ -18,6 +19,8 @@ app.include_router(get_post_router)
 app.include_router(del_patch_router)
 
 
+app.middleware("http")(my_middleware)
+
 
 
 origins = [
@@ -34,14 +37,6 @@ app.add_middleware(
         allow_methods=["*"],
         allow_headers=["*"],
     )
-
-
-REQUEST_COUNT = Counter("http_requests_total", "HTTP requests total count")
-
-@app.get("/")
-async def root():
-    REQUEST_COUNT.inc()
-    return {"message": "Hello World"}
 
 
 @app.get("/metrics")
