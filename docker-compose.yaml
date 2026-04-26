@@ -4,13 +4,13 @@ services:
       context: .
       dockerfile: backend/Dockerfile
     image: my_backend_build
-
     depends_on:
       redis:
         condition: service_healthy
-
     ports:
       - "8000:8000"
+#    expose:
+#      - "8000"
     container_name: my_backend_container
     env_file:
       - .env
@@ -26,9 +26,10 @@ services:
   db:
     image: postgres:18
     container_name: db_container
-
     ports:
       - "5432:5432"
+#    expose:
+#      - "5432"
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -51,6 +52,8 @@ services:
         condition: service_healthy
     ports:
       - "6379:6379"
+#    expose:
+#      - "6379"
     command: >
       sh -c "redis-server --requirepass $$REDIS_PASSWORD"
     env_file:
@@ -77,11 +80,26 @@ services:
       articles_network:
 
 
+  prometheus:
+    image: prom/prometheus:v3
+    container_name: prometheus_container
+    ports:
+      - "9090:9090"
+#    expose:
+#      - "9090"
+    volumes:
+      - prometheus-data:/prometheus
+      - ./config/prometheus:/etc/prometheus/
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    networks:
+      articles_network:
 
 
 
 volumes:
   db-data:
+  prometheus-data:
 
 networks:
   articles_network:
