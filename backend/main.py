@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.responses import Response
 
 from .back_backend.pre_post import lifespan
 
@@ -7,6 +8,8 @@ from .routers.auth_router import router as auth_router
 from .routers.del_patch_router import router as del_patch_router
 
 from fastapi.middleware.cors import CORSMiddleware
+
+from prometheus_client import Counter, generate_latest, CONTENT_TYPE_LATEST
 
 app = FastAPI(lifespan=lifespan)
 
@@ -31,3 +34,16 @@ app.add_middleware(
         allow_methods=["*"],
         allow_headers=["*"],
     )
+
+
+REQUEST_COUNT = Counter("http_requests_total", "HTTP requests total count")
+
+@app.get("/")
+async def root():
+    REQUEST_COUNT.inc()
+    return {"message": "Hello World"}
+
+
+@app.get("/metrics")
+async def metrics():
+    return Response(generate_latest(), media_type=CONTENT_TYPE_LATEST)
