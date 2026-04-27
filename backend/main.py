@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.responses import Response
 
-from .back_backend.middleware import my_middleware
+from .back_backend.middleware import PrometheusMiddleware
 from .back_backend.pre_post import lifespan
 
 from .routers.get_post_router import router as get_post_router
@@ -19,9 +19,6 @@ app.include_router(get_post_router)
 app.include_router(del_patch_router)
 
 
-app.middleware("http")(my_middleware)
-
-
 
 origins = [
     "http://localhost",
@@ -30,6 +27,7 @@ origins = [
     "http://127.0.0.1:80",
 ]
 
+app.add_middleware(PrometheusMiddleware)
 app.add_middleware(
         CORSMiddleware,
         allow_origins=origins,
