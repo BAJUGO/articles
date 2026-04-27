@@ -4,7 +4,7 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from fastapi import Request
 
 HTTP_REQUEST_DURATION = Histogram(
-    "http_request_duration_seconds",
+    "http_requests_total",
     "Duration of HTTP request in seconds",
     labelnames=["method", "path", "status"],
     buckets=[0.001, 0.01, 0.05, 0.1, 0.25, 0.5, 1.0, 2.0, 5.0, 10.0]
