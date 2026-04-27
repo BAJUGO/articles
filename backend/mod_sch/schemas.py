@@ -40,7 +40,7 @@ class ArticlePatch(BaseModel):
 class ArticleCreate(BaseModel):
     title: str = Field("untitled", max_length=50)
     main_text: str
-    user_id: int
+    user_id: int | None = None
 
 
 class ArticleSchema(BaseReturn, ArticleCreate):

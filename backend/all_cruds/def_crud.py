@@ -17,8 +17,6 @@ from ..mod_sch.models import User, Article
 
 from fastapi.exceptions import HTTPException
 
-from ..utils import json_body, json_to_dict_or_pyd_session
-
 from fastapi import Body
 
 T = TypeVar("T", User, Article)
