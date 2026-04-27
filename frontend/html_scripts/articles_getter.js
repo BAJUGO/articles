@@ -6,13 +6,14 @@ const renderArticle = (article) => `
     <div class="article-card">
         <h4>${article.title}</h4>
         <p>${article.main_text || ''}</p>
+        <small>User ID: ${article.user_id}</small><br>
         <small>ID: ${article.id}</small>
     </div>  
 `;
 
 
 async function send_get_request(where_to_send, container) {
-    const data = await json_fetch(`http://localhost:8000/${where_to_send}`, {method: "GET", credentials: "include"})
+    const data = await json_fetch(`http://localhost:8000/${where_to_send}`)
     console.log(data)
     container.innerHTML = data.items.map(renderArticle).join(`<hr>`);
 }

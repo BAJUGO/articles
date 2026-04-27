@@ -12,7 +12,7 @@ from sqlalchemy.orm import selectinload
 
 from ..authorization.utilities import hash_password
 
-from ..mod_sch.schemas import UserSchema, ArticleSchema, ArticleCreate, UserPatch
+from ..mod_sch.schemas import UserSchema, ArticleSchema, ArticleCreate, UserPatch, UserCreate
 from ..mod_sch.models import User, Article
 
 from fastapi.exceptions import HTTPException
@@ -107,8 +107,8 @@ async def update_article_session(session: AsyncSession, changes: BaseModel, arti
 
 
 #* USERS
-async def register_user(user_in, session: AsyncSession):
-    user = User(**user_in.model_dump(exclude={"password"}), hashed_password=hash_password(user_in.password), role="user")
+async def register_user(user_data: UserCreate, session: AsyncSession):
+    user = User(**user_data.model_dump(exclude={"password"}), hashed_password=hash_password(user_data.password), role="user")
     try:
         session.add(user)
         await session.commit()

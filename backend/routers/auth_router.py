@@ -53,7 +53,6 @@ async def for_users_only(user_token: auth.AccessTokenData = user_dep):
 
 
 @router.post("/register", tags=["Auth"])
-async def register(user_json: json_body, session: AsyncSession = ses_dep):
-    user = await json_to_dict_or_pyd_session(body=user_json, key_to_extract="user_body", to_schema=UserCreate)
-    await register_user(user_in=user, session = session)
+async def register(user_data: UserCreate, session: AsyncSession = ses_dep):
+    await register_user(user_data=user_data, session = session)
     return {"status": "oke"}

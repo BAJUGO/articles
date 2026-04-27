@@ -2,8 +2,12 @@
 export async function json_fetch(url, options = {}) {
     let resp = await fetch(url, {
         ...options,
-        body: options.form ?? options.body,
-        method: options.method ?? "GET"
+        credentials: options.credentials ?? "include",
+        body: JSON.stringify(options.body),
+        method: options.method ?? "GET",
+        headers: options.headers ?? {
+            "Content-Type": "application/json"
+        }
     })
     return resp.json()
 }
