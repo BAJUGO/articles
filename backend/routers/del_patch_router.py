@@ -56,6 +56,5 @@ async def delete_article(article_id: int, session: AsyncSession = ses_dep):
 #! there is no sense in upper one, but it's just a possibility to show that I actually can write function like this
 
 @router.patch("/articles/{article_id}", dependencies = [user_dep])
-async def change_article(article_id: int, changes_json: json_body, session: AsyncSession = ses_dep):
-    changes = await json_to_dict_or_pyd_session(body = changes_json, key_to_extract="update_body")
-    return await update_article_session(session = session, article_id = article_id, changes = ArticlePatch(**changes))
+async def change_article(article_id: int, changes: ArticlePatch, session: AsyncSession = ses_dep):
+    return await update_article_session(session = session, article_id = article_id, changes = changes)

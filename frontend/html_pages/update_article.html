@@ -32,7 +32,7 @@
 <button id="unlogin">Unlogin</button>
 
 <div class="container">
-    <div class="row">
+        <div class="row">
         <label>Title</label>
         <input id="article_title">
     </div>
@@ -48,17 +48,17 @@
     </div>
 
     <div class="row">
-        <button title="Пустые параметры будут проигнорированны" id="updateArticleButton">update article</button>
+        <button title="Пустые параметры будут проигнорированны" type="button" id="update_article_button">update article</button>
     </div>
+
 </div>
 
 
 <script type="module">
     import { includeUnlogin } from "../html_scripts/funcs.js";
-    import {update_article} from "../html_scripts/funcs_updater.js";
-    document.getElementById("updateArticleButton").addEventListener("click", update_article)
     includeUnlogin();
 </script>
+<script type="module" src="../html_scripts/funcs_updater.js"></script>
 
 </body>
 </html>
