@@ -55,7 +55,8 @@ async def get_all_articles_with_users(session: AsyncSession = ses_dep, redis: Re
 
 @router.get("/articles/{article_id}", dependencies = [user_dep])
 async def get_article_by_id(article_id: int, session: AsyncSession = ses_dep, redis: Redis = redis_dep):
-    return await get_article_by_id_cached(session = session, redis=redis, article_id = article_id)
+    article =  await get_article_by_id_cached(session = session, redis=redis, article_id = article_id)
+    return {"items": [article] if article else []}
 
 
 @router.get("/articles/user/{user_id}", dependencies = [user_dep])
