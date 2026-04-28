@@ -53,8 +53,8 @@ services:
 #   expose:
 #     - "9187"
     environment:
-      DATA_SOURCE_USER: postgres
-      DATA_SOURCE_PASS: kiril12AZ
+      DATA_SOURCE_USER: ${POSTGRES_USER}
+      DATA_SOURCE_PASS: ${POSTGRES_PASSWORD}
     depends_on:
       - db
     networks:
@@ -93,7 +93,7 @@ services:
 #     - "9121"
     environment:
       REDIS_ADDR: redis://redis:6379
-      REDIS_PASSWORD: kiril12AZ
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
 
     networks:
       articles_network:
@@ -148,12 +148,30 @@ services:
       articles_network:
 
 
+  weaviate:
+    image: cr.weaviate.io/semitechnologies/weaviate:1.37.2
+    ports:
+      - "8080:8080"
+      - "50051:50051"
+    environment:
+      AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED: "true"
+      PERSISTENCE_DATA_PATH: "/var/lib/weaviate"
+      QUERY_DEFAULTS_LIMIT: "10"
+      CLUSTER_HOSTNAME: "node1"
+    volumes:
+      - weaviate_data:/var/lib/weaviate
+    networks:
+      articles_network:
+
+
+
 
 
 volumes:
   db-data:
   prometheus_data:
   grafana_storage:
+  weaviate_data:
 
 networks:
   articles_network:

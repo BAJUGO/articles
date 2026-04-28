@@ -1,7 +1,6 @@
 from fastapi import APIRouter
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from ..utils import json_body, json_to_dict_or_pyd_session
 from ..authorization import admin_dep
 from ..mod_sch import ArticleSchema, ArticleCreate, ArticlePatch, UserPatch
 from ..core import ses_dep

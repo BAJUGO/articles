@@ -7,8 +7,6 @@ from fastapi import APIRouter, Response, Depends, Body, Request, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from ..mod_sch.schemas import UserCreate
 
-from ..utils import json_body, json_to_dict_or_pyd_session
-
 
 router = APIRouter(tags=["Auth"])
 

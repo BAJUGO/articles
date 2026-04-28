@@ -2,7 +2,6 @@ from fastapi import APIRouter
 from redis.asyncio import Redis
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from ..utils import json_body, json_to_dict_or_pyd_session
 from ..back_backend.pre_post import redis_dep
 
 from ..mod_sch.models import User
