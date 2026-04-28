@@ -22,7 +22,10 @@ registerForm.addEventListener("submit", event => {
         credentials: "include",
         body: user_data
     })
-    json_fetch("http://localhost:8000/create_token", {method: "POST", body: user_data}).then(response => {
+    json_fetch("http://localhost:8000/create_token", {method: "POST", body:
+            {email: user_data.email,
+                password:user_data.password}
+    }).then(response => {
         if (response.ok) {
             window.location.href = "../html_pages/main_page.html"
         }

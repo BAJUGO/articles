@@ -9,6 +9,10 @@ class BaseReturn(BaseModel):
 
 #*Authors
 
+class UserAuth(BaseModel):
+    email: EmailStr
+    password: str
+
 
 class UserPatch(BaseModel):
     name: str | None = Field(None, max_length=30)
@@ -47,4 +51,8 @@ class ArticleSchema(BaseReturn, ArticleCreate):
     pass
 
 
+class ArticleSearch(BaseModel):
+    query: str
+    limit: int = 5
+    user_id: int
 

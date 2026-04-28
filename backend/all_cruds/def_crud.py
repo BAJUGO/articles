@@ -10,6 +10,9 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
+from ..services.weaviate_index import connect_weaviate, upsert_article
+from ..services.embeddings import build_article_text, get_embedding
+
 from ..authorization.utilities import hash_password
 
 from ..mod_sch.schemas import UserSchema, ArticleSchema, ArticleCreate, UserPatch, UserCreate
@@ -94,8 +97,21 @@ async def get_article_by_id_session(session: AsyncSession, article_id: int):
 
 
 async def add_article_session(session: AsyncSession, article_in: ArticleCreate):
-    return await model_to_schema(await adder_session(session = session, model_type=Article, obj_to_add = article_in), schema=ArticleSchema)
+    article = await adder_session(session = session, model_type=Article, obj_to_add = article_in)
 
+    text_for_embedding = build_article_text(title=article.title, main_text=article.main_text)
+    vector = get_embedding(text_for_embedding)
+
+    with connect_weaviate() as client:
+        upsert_article(
+            client=client,
+            article_id=article.id,
+            user_id=article.user_id,
+            title=article.title,
+            main_text=article.main_text,
+            vector=vector,
+        )
+    return article
 
 async def delete_article_session(session: AsyncSession, article_id: int):
     await deleter_session(session = session, model_type = Article, obj_id = article_id)

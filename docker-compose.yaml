@@ -150,6 +150,7 @@ services:
 
   weaviate:
     image: cr.weaviate.io/semitechnologies/weaviate:1.37.2
+    container_name: weaviate_container
     ports:
       - "8080:8080"
       - "50051:50051"
