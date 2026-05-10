@@ -38,7 +38,7 @@ async def authenticate_user(
     stmt = Select(User).where(User.email == str(user_from_json["email"]))
     user = await session.scalar(stmt)
     if user is None:
-        raise HTTPException(status_code=404, detail="Email or password is incorrect not found")
+        raise HTTPException(status_code=404, detail="Email or password is incorrect")
     if not verify_password(user_from_json["password"], user.hashed_password):
-        raise HTTPException(status_code=404, detail="Email or password is incorrect not found")
+        raise HTTPException(status_code=404, detail="Email or password is incorrect")
     return user
