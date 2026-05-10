@@ -81,6 +81,7 @@ async def add_article(article: ArticleCreate, session: AsyncSession = ses_dep, u
     return {"items": [added_article] if added_article else []}
 
 
+
 @router.post("/search")
 async def search_article(payload: ArticleSearch, session: AsyncSession = ses_dep, user = user_dep):
     query_vector = get_embedding(payload.query)
